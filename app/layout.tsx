@@ -29,8 +29,6 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(APP.URL),
   openGraph: {
-    title: APP.NAME + ' - Luminarie Who Changed The World',
-    description: APP.DESCRIPTION,
     images: [
       {
         url: `https://raw.githubusercontent.com/Jaimin25/GreatMinds/1ae55c6fda15d3e98fc82467f2de18e04992ffc2/public/Images/Link%20Preview.png`,
@@ -44,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: APP.URL,
     creator: APP.URL,
-    title: APP.NAME + ' - Luminarie Who Changed The World',
+    title: APP.NAME + ' - Luminaries Who Changed The World',
     description: APP.DESCRIPTION,
     images: [
       {
