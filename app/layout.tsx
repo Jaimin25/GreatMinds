@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description: APP.DESCRIPTION,
     images: [
       {
-        url: `${APP.URL}/LinkPreview(1).png`,
+        url: `https://raw.githubusercontent.com/Jaimin25/GreatMinds/1ae55c6fda15d3e98fc82467f2de18e04992ffc2/public/Images/Link%20Preview.png`,
         width: 1200,
         height: 630,
         alt: 'GreatMinds',
@@ -42,13 +42,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: APP.URL + ' - Luminarie Who Changed The World',
+    site: APP.URL,
     creator: APP.URL,
-    title: APP.NAME,
+    title: APP.NAME + ' - Luminarie Who Changed The World',
     description: APP.DESCRIPTION,
     images: [
       {
-        url: 'public/Images/LinkPreview(1).png',
+        url: 'https://raw.githubusercontent.com/Jaimin25/GreatMinds/1ae55c6fda15d3e98fc82467f2de18e04992ffc2/public/Images/Link%20Preview.png',
         width: 1200,
         height: 630,
         alt: 'GreatMinds',
