@@ -44,7 +44,7 @@ export default function Header() {
         </Button>
         <Button
           onClick={() =>
-            window.open('https://github.com/Jaimin25/grtminds', '_blank')
+            window.open('https://github.com/Jaimin25/GreatMinds', '_blank')
           }
         >
           <svg
