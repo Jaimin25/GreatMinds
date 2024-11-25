@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: APP.URL,
-    creator: APP.URL,
+    creator: '@jaimin_chovatia',
     title: APP.NAME + ' - Luminaries Who Changed The World',
     description: APP.DESCRIPTION,
     images: [
