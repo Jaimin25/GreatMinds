@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState, useCallback, memo } from 'react';
-import Masonry from 'react-masonry-css';
+// import Masonry from 'react-masonry-css';
 import { WikipediaInfo } from '@/lib/type';
 import PioneerCard from '../Cards/Pioneers';
 import { useSidebar } from '../ui/sidebar';
@@ -10,6 +10,7 @@ import { Badge } from '../ui/badge';
 import { CircleX, LoaderCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { loadPioneers } from '@/app/actions';
+import { cn } from '@/lib/utils';
 
 interface HomePageProps {
   pioneers: WikipediaInfo[];
@@ -65,18 +66,18 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
   const [pioneers, setPioneers] = useState(initialPioneers);
 
   // Memoize the breakpoint configuration
-  const breakpointColumnsObj = useMemo(
-    () => ({
-      // default: state === 'expanded' ? 2 : 4,
-      2560: state === 'expanded' ? 2 : 4,
-      1440: state === 'expanded' ? 2 : 4,
-      1024: state === 'expanded' ? 1 : 2,
-      768: state === 'expanded' ? 1 : 2,
-      640: 1,
-      425: 1,
-    }),
-    [state],
-  );
+  // const breakpointColumnsObj = useMemo(
+  //   () => ({
+  //     // default: state === 'expanded' ? 2 : 4,
+  //     2560: state === 'expanded' ? 2 : 4,
+  //     1440: state === 'expanded' ? 2 : 4,
+  //     1024: state === 'expanded' ? 1 : 2,
+  //     768: state === 'expanded' ? 1 : 2,
+  //     640: 1,
+  //     425: 1,
+  //   }),
+  //   [state],
+  // );
 
   useEffect(() => {
     setGlobalPioneers(pioneers);
@@ -152,10 +153,15 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
         <div>No pioneer found!</div>
       ) : (
         <>
-          <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className='my-masonry-grid'
-            columnClassName='my-masonry-grid_column'
+          <div
+            // breakpointCols={breakpointColumnsObj}
+            className={cn(
+              'grid grid-cols-1 gap-6',
+              state === 'expanded'
+                ? 'sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+                : 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+            )}
+            // columnClassName='my-masonry-grid_column'
           >
             {filteredPioneers.map((person, index) => (
               <MemoizedPioneerCard
@@ -164,7 +170,7 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
                 index={index}
               />
             ))}
-          </Masonry>
+          </div>
           <div className='flex w-full justify-center'>
             <Button
               variant={'outline'}
