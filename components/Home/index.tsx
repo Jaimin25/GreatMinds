@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useEffect, useMemo, useState, useCallback, memo } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  memo,
+  useRef,
+} from 'react';
 // import Masonry from 'react-masonry-css';
 import { WikipediaInfo } from '@/lib/type';
 import PioneerCard from '../Cards/Pioneers';
 import { useSidebar } from '../ui/sidebar';
 import { useFilter } from '../Context/FilterContext';
 import { Badge } from '../ui/badge';
-import { CircleX, LoaderCircle } from 'lucide-react';
-import { Button } from '../ui/button';
+import { CircleX } from 'lucide-react';
 import { loadPioneers } from '@/app/actions';
 import { cn } from '@/lib/utils';
 
@@ -21,10 +27,18 @@ const MemoizedPioneerCard = memo(
   ({
     personDetails,
     index,
+    lastItemRef,
   }: {
     personDetails: WikipediaInfo;
     index: number;
-  }) => <PioneerCard personDetails={personDetails} index={index} />,
+    lastItemRef: ((node: HTMLDivElement) => void) | null;
+  }) => (
+    <PioneerCard
+      personDetails={personDetails}
+      index={index}
+      lastItemRef={lastItemRef}
+    />
+  ),
 );
 
 MemoizedPioneerCard.displayName = 'MemoizedPioneerCard';
@@ -83,24 +97,37 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
     setGlobalPioneers(pioneers);
   }, [pioneers, setGlobalPioneers]);
 
-  const loadMoreP = useCallback(async () => {
-    if (isFetching) return;
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-    setIsFetching(true);
-    try {
-      const newData = await loadPioneers({
-        lastId: pioneers[pioneers.length - 1].id,
-        page: pioneers.length / 10 + 1,
+  const lastItemRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isFetching) return;
+      if (pioneers.length === 50) return;
+      if (observerRef.current) observerRef.current.disconnect();
+      observerRef.current = new IntersectionObserver(async (entries) => {
+        if (entries[0].isIntersecting) {
+          if (isFetching) return;
+
+          setIsFetching(true);
+          try {
+            const newData = await loadPioneers({
+              lastId: pioneers[pioneers.length - 1].id,
+              page: pioneers.length / 10 + 1,
+            });
+            if (newData.length >= 1) {
+              setPioneers((prevPioneers) => [...prevPioneers, ...newData]);
+            }
+          } catch (error) {
+            console.error('Error loading more pioneers:', error);
+          } finally {
+            setIsFetching(false);
+          }
+        }
       });
-      if (newData.length >= 1) {
-        setPioneers((prevPioneers) => [...prevPioneers, ...newData]);
-      }
-    } catch (error) {
-      console.error('Error loading more pioneers:', error);
-    } finally {
-      setIsFetching(false);
-    }
-  }, [isFetching, pioneers]);
+      if (node) observerRef.current.observe(node);
+    },
+    [isFetching, pioneers],
+  );
 
   const filteredPioneers = useMemo(() => {
     return pioneers.filter((person) => {
@@ -163,32 +190,31 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
             )}
             // columnClassName='my-masonry-grid_column'
           >
-            {filteredPioneers.map((person, index) => (
-              <MemoizedPioneerCard
-                key={person.id}
-                personDetails={person}
-                index={index}
-              />
-            ))}
+            {filteredPioneers.map((person, index) => {
+              const isLastItem = index === filteredPioneers.length - 1;
+              return (
+                <MemoizedPioneerCard
+                  key={person.id}
+                  personDetails={person}
+                  index={index}
+                  lastItemRef={isLastItem ? lastItemRef : null}
+                />
+              );
+            })}
           </div>
           <div className='flex w-full justify-center'>
-            <Button
+            {/* <Button
               variant={'outline'}
               onClick={loadMoreP}
               disabled={isFetching}
               className='mt-4'
-            >
-              {isFetching ? (
-                <>
-                  <LoaderCircle className='animate-spin' />
-                  <p>Loading</p>
-                </>
-              ) : (
-                <>
-                  <p>Load More</p>
-                </>
-              )}
-            </Button>
+            > */}
+            {isFetching && (
+              <>
+                <p>Loading...</p>
+              </>
+            )}
+            {/* </Button> */}
           </div>
         </>
       )}

@@ -13,12 +13,14 @@ import React from 'react';
 export default function PioneerCard({
   personDetails,
   index,
+  lastItemRef,
 }: {
   personDetails: WikipediaInfo;
   index: number;
+  lastItemRef: ((node: HTMLDivElement) => void) | null;
 }) {
   return (
-    <Card key={index} className='flex flex-col'>
+    <Card key={index} className='flex flex-col' ref={lastItemRef}>
       <div className='mt-4 flex aspect-video h-[250px] items-center justify-center'>
         <Image
           src={personDetails.image_url}
