@@ -102,7 +102,7 @@ export default function HomePage({ pioneers: initialPioneers }: HomePageProps) {
   const lastItemRef = useCallback(
     (node: HTMLDivElement) => {
       if (isFetching) return;
-      if (pioneers.length === 50) return;
+      if (pioneers.length === 60) return;
       if (observerRef.current) observerRef.current.disconnect();
       observerRef.current = new IntersectionObserver(async (entries) => {
         if (entries[0].isIntersecting) {
